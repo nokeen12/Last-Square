@@ -1,0 +1,14 @@
+body{
+    margin: 0;
+    background-color: darkslategrey;
+}
+/* color palette - #051e3e • #251e3e • #451e3e • #651e3e • #851e3e */
+canvas{
+    display: block;
+    border: 10px solid #251e3e;
+    background-color: #051e3e;
+    width: 98%;
+    margin-right: auto;
+    margin-left: auto;
+    height: auto;
+}
