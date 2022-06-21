@@ -8,16 +8,20 @@
         <link rel="stylesheet" href="/styles/styles.css">
     </head>
     <body>
-        <div class="main-menu">
-            <h1>Main Menu</h1>
-            <p>Survive for as long as you can!</p>
-            <button id="start-button">StartGame</button>
-        </div>
         <div id ="game-screen">
-            <canvas id="canvas" width="800" height="800">
-
-            </canvas>
+            <canvas id="canvas" width="800" height="800"></canvas>
+            <div id ="score">Score: <span>0</span></div>
+            <div id="main-menu">
+                <h1>Main Menu</h1>
+                <p>Survive for as long as you can!</p>
+                <div id="buttons">
+                    <button class="select" id="start-button">StartGame</button>
+                    <button class="select" id="controls">Controls</button>
+                    <button class="select" id="help">Help</button>
+                </div>
+            </div>
         </div>
+
 
         <script type="text/javascript" src="js/index.js"></script>
     </body>

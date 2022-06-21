@@ -3,6 +3,7 @@ class CharacterObject {
     this.x = x;
     this.y = y;
     this.vx = 0;
+    this.vy = 0;
     this.vxl = 0;
     this.vxr = 0;
     this.vyu = 0;
@@ -28,11 +29,6 @@ class CharacterObject {
     this.ctx.fillStyle = this.color;
     this.ctx.fillRect(this.x, this.y, this.width, this.height);
   }
-  left() {return this.x}
-  right() {return this.x + this.width}
-  top() {return this.y}
-  bottom() {return this.y + this.height}
-  crashWith(object) {return !(this.bottom() < object.top() || this.top() > object.bottom() || this.right() < object.left() || this.left() > object.right())}
 }
 //for objects with images
 class ImageObject extends CharacterObject {
@@ -46,10 +42,20 @@ class ImageObject extends CharacterObject {
   }
 }
 //for bullets
-class BulletObject extends CharacterObject{
-  constructor(x, y, width, height, canvasContext, color, aim){
-    super(x, y, width, height, canvasContext, color);
+class BulletObject{
+  constructor(x, y, radius, canvasContext, color, aim){
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.ctx = canvasContext;
+    this.color = color;
     this.aim = aim;
+  }
+  draw(){
+    this.ctx.beginPath();
+    this.ctx.fillStyle = this.color;
+    this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+    this.ctx.fill()
   }
   update(){
     this.draw();
@@ -65,14 +71,29 @@ window.onload = () => {
   let zombieArray = [];
   //will contain all of bullets
   let bulletArray = [];
-  let ammoArray = [];
+  let ammoArray = [1, 1, 1, 1, 1, 1];
   //initializes interval id to be used as a timer later
   let intervalId = null;
+  function reset(){
+    setTimeout(() => {
+      const myCanvas = document.querySelector('canvas');
+      const ctx = myCanvas.getContext('2d');
+      menu.style.visibility = 'visible';
+      ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+      totalFrameCount = 0;
+      zombieArray = [];
+      bulletArray = [];
+      ammoArray = [1, 1, 1, 1, 1, 1];
+    }, 5000)
+  }
   //starts game when you click the start button
+  const menu = document.getElementById('main-menu');
   document.getElementById('start-button').onclick = () => {
-    startGame();
+    setTimeout(() =>{
+      menu.style.visibility = 'hidden';
+      startGame();
+    },500)
   };
-
   //game loop
   function startGame() {    
     //canvas and context
@@ -87,7 +108,11 @@ window.onload = () => {
     const myFloor = new ImageObject(0, 0, myCanvas.width, myCanvas.height, ctx, floorImg);
     const player = new CharacterObject(myCanvas.width/2, myCanvas.height/2, myCanvas.width/20, myCanvas.width/20, ctx, 'red');
     //zombie class references player
-    class ZombieObject extends BulletObject{
+    class ZombieObject extends CharacterObject{
+      constructor(x, y, width, height, canvasContext, color, aim){
+        super(x, y, width, height, canvasContext, color);
+        this.aim = aim;
+      }
       //moves zombies towards player's current position
       update(){
         this.draw();
@@ -106,11 +131,14 @@ window.onload = () => {
       ammoArray.push(1)
       }
     }
+    let frames;
+    let score = 0;
+    let mango = document.querySelector("#score span");
+    console.log(mango.innerHTML)
+    function updateGame(){
+      frames = totalFrameCount++;
 
-    function updateZombies(){
-      totalFrameCount++;
-
-      //we have 60 frames per second - so create new obstacle every 4 seconds
+      //60 fps - creates zombie every 5 seconds
       if(totalFrameCount % 300 === 0){
         let x
         let y
@@ -130,29 +158,54 @@ window.onload = () => {
         }
         zombieArray.push(new ZombieObject(x, y, player.width, player.height, ctx, color, velocity))
       }
+      zombieArray.forEach((zombie, index) => {
+        zombie.update()
+        //zombie and player collision
+        const distBetween = Math.hypot(player.x - zombie.x, player.y - zombie.y)
+        if(distBetween-zombie.width/2-player.width/2<1){
+          runGame = false;
+          reset();
+        }
+        //updates each bullet and detects collision
+        bulletArray.forEach((bullet, bulletIndex) => {
+          bullet.update()
+          if(bullet.x + bullet.radius < 0 || bullet.x - bullet.radius > myCanvas.width || bullet.y + bullet.radius < 0 || bullet.y - bullet.radius > myCanvas.height){
+            bulletArray.splice(bulletIndex, 1)
+          }
+          const distBetween = Math.hypot(bullet.x - (zombie.x+zombie.width/2), bullet.y - (zombie.y+zombie.height/2))
+          if(distBetween-zombie.width/2-bullet.radius/2<1){
+            //fixes jitter frames when deleting zombies
+            setTimeout(() =>{
+              zombieArray.splice(index, 1);
+            }, 0)
+            bulletArray.splice(bulletIndex, 1);
+            score+=10;
+            mango.innerHTML = score;
+          }
+        })
+      })
+    }
+    let runGame = true;
+    function startGame(){ 
+      if (runGame === true){
+        //update player position
+        player.updatePosition();
+        //clear canvas
+        ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+        //draws floor
+        myFloor.draw();
+        //draws player
+        player.draw();
+        //creates zombies in intervals;
+        updateGame();
+        //moves zombies
+      }
     }
 
-    function updateGame(){ 
-      //update player position
-      player.updatePosition();
-      //clear canvas
-      ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-      //draws floor
-      myFloor.draw();
-      //draws player
-      player.draw();
-      //creates zombies in intervals;
-      updateZombies();
-      //updates each bullet and detects collision
-      //moves bullets
-      bulletArray.forEach(bullet => {bullet.update()})
-      //moves zombies
-      zombieArray.forEach(zombie => {zombie.update()})
-    }
     
     //only start the game loop after the road image has finished loading
     floorImg.onload =  () => {
-      intervalId = setInterval(updateGame, 1)
+      intervalId = setInterval(startGame, 1)
     };
 
     //player movement
@@ -232,7 +285,7 @@ window.onload = () => {
       }
       if(ammoArray.length >= 1){
       ammoArray.splice(0, 1);
-      bulletArray.push(new BulletObject(player.x+(player.width/3), player.y+(player.height/3), player.width/3, player.height/3, ctx, 'blue', velocity))
+      bulletArray.push(new BulletObject(player.x+(player.width/3), player.y+(player.height/3), player.width/6, ctx, 'white', velocity))
       }
     }
   }
