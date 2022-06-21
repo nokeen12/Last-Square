@@ -109,20 +109,33 @@ window.onload = () => {
     const player = new CharacterObject(myCanvas.width/2, myCanvas.height/2, myCanvas.width/20, myCanvas.width/20, ctx, 'red');
     //zombie class references player
     class ZombieObject extends CharacterObject{
-      constructor(x, y, width, height, canvasContext, color, aim){
+      constructor(x, y, width, height, canvasContext, color, type){
         super(x, y, width, height, canvasContext, color);
-        this.aim = aim;
+        this.type = type;
       }
+      
       //moves zombies towards player's current position
       update(){
+        let speed;
         this.draw();
         let angle = Math.atan2(player.y - this.y, player.x - this.x)
-        this.aim = {
-          x: Math.cos(angle) * .2,
-          y: Math.sin(angle) * .2
+        switch(this.type){
+          case 0:
+            speed = {
+              x: Math.cos(angle) * .2,
+              y: Math.sin(angle) * .2
+            };
+            break;
+          case 1:
+            speed = {
+              x: Math.cos(angle) * .6,
+              y: Math.sin(angle) * .6
+            };
+            break;
         }
-        this.x += this.aim.x;
-        this.y += this.aim.y;
+        
+        this.x += speed.x;
+        this.y += speed.y;
       }
     }
     //gives player more ammo to shoot
@@ -131,15 +144,31 @@ window.onload = () => {
       ammoArray.push(1)
       }
     }
+
+
+    let roundCurrent = 1;
+    let roundText = document.querySelector("#round span");
+
+    let difficulty = 1;
+    let zombiesAlive = zombieArray.length;
+
     let frames;
     let score = 0;
-    let mango = document.querySelector("#score span");
-    console.log(mango.innerHTML)
+    let points = document.querySelector("#score span");
+    let ammunition = document.querySelector("#ammo span");
+
+
     function updateGame(){
       frames = totalFrameCount++;
-
-      //60 fps - creates zombie every 5 seconds
-      if(totalFrameCount % 300 === 0){
+      ammunition.innerHTML = ammoArray.length;
+      roundText.innerHTML = roundCurrent;
+      //increases round and difficulty as time goes on/speeds up zombie spawnrate
+      if(totalFrameCount % 2000 === 0){
+        roundCurrent++;
+        difficulty = roundCurrent*20
+      }
+      //60 fps - spawns zombies in intervals
+      if(totalFrameCount % (300-difficulty) === 0){
         let x
         let y
         //spawns zombies on the outside of map
@@ -150,13 +179,24 @@ window.onload = () => {
           x = Math.random() * myCanvas.width;
           y = Math.random() < 0.5 ? 0 - player.height: myCanvas.height + player.height;
         }
-        const color = 'green'
-        let angle = Math.atan2(player.y - y, player.x - x)
-        const velocity = {
-          x: Math.cos(angle) * .5,
-          y: Math.sin(angle) * .5
+        const greenColor = 'green'
+        const yellowColor = 'yellow'
+        // let angle = Math.atan2(player.y - y, player.x - x)
+        // const greenVelocity = {
+        //   x: Math.cos(angle) * 1,
+        //   y: Math.sin(angle) * 1
+        // }
+        // const yellowVelocity = {
+        //   x: Math.cos(angle) * 5,
+        //   y: Math.sin(angle) * 5
+        // }
+        if(Math.random() < (0.03*roundCurrent)){
+          zombieArray.push(new ZombieObject(x, y, player.width, player.height, ctx, yellowColor, 1))
+        }else{
+          zombieArray.push(new ZombieObject(x, y, player.width, player.height, ctx, greenColor, 0))
         }
-        zombieArray.push(new ZombieObject(x, y, player.width, player.height, ctx, color, velocity))
+       
+
       }
       zombieArray.forEach((zombie, index) => {
         zombie.update()
@@ -180,7 +220,7 @@ window.onload = () => {
             }, 0)
             bulletArray.splice(bulletIndex, 1);
             score+=10;
-            mango.innerHTML = score;
+            points.innerHTML = score;
           }
         })
       })
