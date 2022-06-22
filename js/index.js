@@ -15,14 +15,21 @@ class CharacterObject {
   }
   
   updatePosition(){
-    if(this.x >= 0){
+    if(this.x <= 0){
+      this.x += 2;  
+    }if((this.x+this.width) >= 800){
+      this.x -= 2;
+    }if(this.y <= 0){
+      this.y += 2;  
+    }if((this.y+this.height) >= 800){
+      this.y -= 2;
+    }
+    else{
       this.x += this.vxl;
       this.x += this.vxr;
-    }else{
-      this.x -= this.vx - 2;
-    }
       this.y += this.vyu;
       this.y += this.vyd;
+    }
   }
   
   draw(){
