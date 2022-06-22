@@ -63,8 +63,8 @@ class BulletObject{
     this.y += this.aim.y;
   }
 }
-const menuMusic = new Audio('/music/menusongdark.mp3')
-const gameMusic = new Audio('/music/thunder.mp3')
+const menuMusic = new Audio('./music/menusongdark.mp3')
+const gameMusic = new Audio('./music/thunder.mp3')
 gameMusic.loop = true;
 gameMusic.volume = .6;
 menuMusic.loop = true;
@@ -160,7 +160,7 @@ window.onload = () => {
 
     //gets images loaded and ready to be used
     const floorImg = new Image();
-    floorImg.src = '/images/floortest.png';
+    floorImg.src = './images/floortest.png';
 
     //creates floor and player
     const myFloor = new ImageObject(0, 0, myCanvas.width, myCanvas.height, ctx, floorImg);
@@ -239,12 +239,12 @@ window.onload = () => {
           y = Math.random() < 0.5 ? 0 - player.height: myCanvas.height + player.height;
         }
         if(Math.random() < (0.03*roundCurrent)){
-          zombieArray.push(new ZombieObject(x, y, 40, 50, ctx, yellowColor, .4, "/images/yellowzombie.png", 2))
+          zombieArray.push(new ZombieObject(x, y, 40, 50, ctx, yellowColor, .4, "./images/yellowzombie.png", 2))
         }else{
-          zombieArray.push(new ZombieObject(x, y, 40, 50, ctx, greenColor, .2, "/images/greenzombie.png", 1))
+          zombieArray.push(new ZombieObject(x, y, 40, 50, ctx, greenColor, .2, "./images/greenzombie.png", 1))
         }
         if(totalFrameCount % (20000) === 0){
-          zombieArray.push(new ZombieObject(x, y, 120, 150, ctx, greenColor, .1, "/images/redzombie.png", 5))
+          zombieArray.push(new ZombieObject(x, y, 120, 150, ctx, greenColor, .1, "./images/redzombie.png", 5))
         }
       }
 
