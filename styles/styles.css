@@ -4,7 +4,6 @@ body{
     background-color: darkslategrey;
     justify-content: center;
 }
-/* color palette - #051e3e • #251e3e • #451e3e • #651e3e • #851e3e */
 #game-screen{
     margin-top: 40px;
     height: 800px;
@@ -13,6 +12,11 @@ body{
     cursor: cell;
     color: white;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+#mutetoggle{
+    position: absolute;
+    bottom: -20px;
+    right: 0;
 }
 canvas{
     background-color: #051e3e;
@@ -62,8 +66,6 @@ canvas{
     position: absolute;
     top: 20px;
     right: 20px;
-    /* color: white; */
-    /* font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
 }
 
 .select:active{
@@ -75,3 +77,48 @@ canvas{
     background-color: #a5254d;
 }
 
+#controls-screen{
+    visibility: hidden;
+    display: flex;
+    position: absolute;
+    top: 0;
+    width:100%;
+    height:100%;
+    background-color: #051e3e;
+    border: 2px solid black;
+    color: #851e3e;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    justify-content: center;
+    flex-direction: column;
+    text-align:center;
+}
+#help-screen{
+    visibility: hidden;
+    display: flex;
+    position: absolute;
+    top: 0;
+    width:100%;
+    height:100%;
+    background-color: #051e3e;
+    border: 2px solid black;
+    color: #851e3e;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    justify-content: center;
+    flex-direction: column;
+    text-align:center;
+}
+#back2{
+    margin-top: 40px;
+}
+#back1{
+    margin-top: 30px;
+}
+#help-screen p{
+    margin-bottom: 0px;
+}
+h1{
+    font-size: 50px;
+}
+#round{
+    visibility: hidden;
+}
