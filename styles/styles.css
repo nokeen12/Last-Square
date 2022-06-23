@@ -3,13 +3,37 @@ body{
     margin: 0;
     background-color: darkslategrey;
     justify-content: center;
+    cursor:none;
+}
+#cursor{
+    z-index: 99;
+    width: 20px;
+    height: 20px;
+    border: 1px solid white;
+    border-radius:50%;
+    position: absolute;
+    pointer-events: none;
+}
+@keyframes cursorAnim {
+    0% {
+        transform: scale(1);
+    }
+    50%{
+        transform: scale(2);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+.expand {
+    animation: cursorAnim .5s forwards;
+    border: 1px solid gray;
 }
 #game-screen{
     margin-top: 40px;
     height: 800px;
     width: 800px;
     position: relative;
-    cursor: cell;
     color: white;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
@@ -54,8 +78,8 @@ canvas{
     color: grey;
     border: none;
     border-radius: 8px;
-    cursor: cell;
     box-shadow: 0 10px #451e3e;
+    cursor: none;
 }
 #score{
     position: absolute;
