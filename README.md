@@ -4,7 +4,7 @@
 
 My first Project at Ironhack. Run around shooting zombies and surviving for as long as you can.
 
-### Play now @ [https://nokeen12.github.io/Sunshine-n-rainbows/](https://nokeen12.github.io/Sunshine-n-rainbows/)
+### Play now @ [https://nokeen12.github.io/Sunshine-n-rainbows/](https://nokeen12.github.io/Last-Square/)
 
 ## Gameplay
 
